@@ -4,7 +4,7 @@
 #include "Day1.h"
 #include "utils.hpp"
 
-CDay1::CDay1(const fs::path& aInputDir) : CAdventSolution{ aInputDir, "Day 1: Insert Title" } {}
+CDay1::CDay1(const fs::path& aInputDir) : CAdventSolution{ aInputDir, "Day 1: Historian Hysteria" } {}
 
 void CDay1::solve()
 {

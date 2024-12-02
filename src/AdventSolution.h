@@ -21,7 +21,15 @@ public:
     }
 
     void printTime() const {
-        std::cout << "Time: " << std::chrono::duration_cast<std::chrono::microseconds>(mEnd - mStart).count() << "us" << std::endl;
+        const auto lTimeMicroSeconds = std::chrono::duration_cast<std::chrono::microseconds>(mEnd - mStart).count();
+        if (lTimeMicroSeconds < 10'000)
+        {
+            std::cout << "Time: " << lTimeMicroSeconds << "us" << std::endl;
+        }
+        else
+        {
+            std::cout << "Time: " << lTimeMicroSeconds / 1000 << "ms" << std::endl;
+        }
     }
 
     virtual void solve() = 0;
