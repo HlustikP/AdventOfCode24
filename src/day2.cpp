@@ -15,13 +15,14 @@ enum class EReportState
 void CDay2::solve()
 {
     printHeadline();
-    mStart = std::chrono::high_resolution_clock::now();
 
     const auto lInput = loadFile("input2-1.txt");
     if (!lInput.has_value())
     {
         return;
     }
+
+    mStart = std::chrono::high_resolution_clock::now();
 
     int lSafeReportsTask1 = 0;
     int lSafeReportsTask2 = 0;
@@ -114,9 +115,10 @@ void CDay2::solve()
         }
     }
 
+    mEnd = std::chrono::high_resolution_clock::now();
+
     std::cout << "Task 1 Safe Reports: " << lSafeReportsTask1 << std::endl;
     std::cout << "Task 2 Safe Reports: " << lSafeReportsTask2 << std::endl;
 
-    mEnd = std::chrono::high_resolution_clock::now();
     printTime();
 }

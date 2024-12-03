@@ -1,4 +1,4 @@
-add_executable(AdventOfCode24 "main.cpp" "day1.cpp" "day2.cpp" "pch.h" "AdventSolutionFactory.cpp")
+add_executable(AdventOfCode24 "main.cpp" "pch.h" "day1.cpp" "day2.cpp" "day3.cpp" "AdventSolutionFactory.cpp")
 
 target_precompile_headers(AdventOfCode24 PRIVATE "pch.h")
 
