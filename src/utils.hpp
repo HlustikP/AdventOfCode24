@@ -207,3 +207,20 @@ std::vector<T> getNumbersFromString(std::string_view aSv, const std::array<char,
 
     return lNumbers;
 };
+
+struct PodDimensions
+{
+    int mWidth;
+    int mHeight;
+};
+
+inline PodDimensions getDimensionsFromString(const std::string& aString, char aLineEnding = NEWLINE_DELIMITER)
+{
+    PodDimensions lDimensions{ .mWidth= 0, .mHeight= 0 };
+
+    const auto lDelimiterCount = static_cast<int>(std::ranges::count(aString, aLineEnding));
+    lDimensions.mHeight = aString.back() == aLineEnding ? lDelimiterCount : lDelimiterCount + 1;
+    lDimensions.mWidth = static_cast<int>(std::distance(aString.begin(), std::ranges::find(aString, aLineEnding)));
+
+    return lDimensions;
+}
