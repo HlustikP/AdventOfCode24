@@ -12,6 +12,8 @@ std::optional<std::unique_ptr<CAdventSolution>> CAdventSolutionFactory::create(c
         return std::make_unique<CDay3>(aInputDir);
     case 4:
         return std::make_unique<CDay4>(aInputDir);
+    case 5:
+        return std::make_unique<CDay5>(aInputDir);
     default:
         return std::nullopt;
     }
