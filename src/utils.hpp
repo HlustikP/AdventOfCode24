@@ -157,6 +157,54 @@ inline std::vector<int> getNumbersFromString(std::string_view aSv)
     return lNumbers;
 };
 
+inline std::vector<int64_t> getNumbersFromStringInt64(std::string_view aSv)
+{
+    std::vector<int64_t> lNumbers;
+    std::optional<int64_t> lCurrentNumber = std::nullopt;
+    int64_t lCurrentDigit = 0;
+    auto lItr = aSv.end() - 1;
+
+    while (lItr >= aSv.begin()) {
+        if (*lItr == '-') {
+            lCurrentNumber *= -1ll;
+            if (lItr == aSv.begin()) [[unlikely]] {
+                break;
+                }
+            --lItr;
+            continue;
+        }
+
+        if (!charIsDigit(*lItr)) {
+            if (lCurrentNumber.has_value()) {
+                lNumbers.push_back(lCurrentNumber.value());
+                lCurrentDigit = 0;
+                lCurrentNumber = std::nullopt;
+            }
+        }
+        else {
+            if (const auto lDigit = charDigitToInt(*lItr); lDigit.has_value()) {
+                if (!lCurrentNumber.has_value()) {
+                    lCurrentNumber = 0;
+                }
+
+                lCurrentNumber += lDigit.value() * static_cast<int64_t>(std::pow(10, lCurrentDigit));
+                lCurrentDigit++;
+            }
+        }
+
+        if (lItr == aSv.begin()) [[unlikely]] {
+            break;
+            }
+        --lItr;
+    }
+
+    if (lCurrentNumber.has_value()) {
+        lNumbers.push_back(lCurrentNumber.value());
+    }
+
+    return lNumbers;
+};
+
 template <typename T, size_t N>
 std::vector<T> getNumbersFromString(std::string_view aSv, const std::array<char, N> aSkipChars)
 {
@@ -223,4 +271,9 @@ inline PodDimensions getDimensionsFromString(const std::string& aString, char aL
     lDimensions.mWidth = static_cast<int>(std::distance(aString.begin(), std::ranges::find(aString, aLineEnding)));
 
     return lDimensions;
+}
+
+inline int64_t concatNumbers(int64_t aLhs, int64_t aRhs) {
+    const int64_t lNumDigits = static_cast<int64_t>(std::log10(aRhs)) + 1;
+    return aLhs * static_cast<int64_t>(std::pow(10, lNumDigits)) + aRhs;
 }
