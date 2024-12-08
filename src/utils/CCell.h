@@ -3,6 +3,8 @@
 #include <ostream>
 #include <unordered_map>
 
+#include "CVector.h"
+
 struct PodPosition
 {
     int mRow;
@@ -14,6 +16,8 @@ class CCell
 public:
     CCell(char aData, int aRow, int aCol);
     bool operator==(const CCell& aOther) const;
+    CVector operator-(const CCell& aCell) const;
+    CCell operator+(const CVector& aVector) const;
 
     [[nodiscard]] char getData() const;
     [[nodiscard]] int getRow() const;

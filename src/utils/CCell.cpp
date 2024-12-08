@@ -9,6 +9,16 @@ bool CCell::operator==(const CCell& aOther) const
     return mPosition.mRow == aOther.getRow() && mPosition.mCol == aOther.getCol();
 }
 
+CVector CCell::operator-(const CCell& aCell) const
+{
+    return CVector{ mPosition.mCol - aCell.getCol(), mPosition.mRow - aCell.getRow() };
+}
+
+CCell CCell::operator+(const CVector& aVector) const
+{
+    return CCell{ mData, mPosition.mRow + aVector.getVertical(), mPosition.mCol + aVector.getHorizontal() };
+}
+
 char CCell::getData() const
 {
     return mData;

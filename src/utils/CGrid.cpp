@@ -52,6 +52,17 @@ std::optional<CCell> CGrid::moveInDirection(const CCell& aCell, EDirection aDire
     return std::nullopt;
 }
 
+std::optional<CCell> CGrid::moveWithVector(const CCell& aCell, CVector aVector) const
+{
+    const auto lRow = aCell.getRow() + aVector.getVertical();
+    const auto lCol = aCell.getCol() + aVector.getHorizontal();
+    if (lRow >= 0 && lRow < mRows && lCol >= 0 && lCol < mColumns) {
+        return getCellAt(lRow, lCol);
+    }
+
+    return std::nullopt;
+}
+
 CCell CGrid::getCellAt(int aRow, int aCol) const
 {
     return CCell{ mData[aRow * mColumns + aCol], aRow, aCol };
@@ -64,7 +75,13 @@ void CGrid::setCellDataAt(int aRow, int aCol, char aData)
 
 void CGrid::setCellDataAt(const CCell& aCell, char aData)
 {
-    mData[aCell.getRow() * mColumns + aCell.getCol()] = aData;
+    const auto lIndex = aCell.getRow() * mColumns + aCell.getCol();
+    if (lIndex < 0 || lIndex >= mData.size()) {
+        std::cerr << "[ERROR] [CGrid] Invalid cell index" << std::endl;
+        return;
+    }
+
+    mData[lIndex] = aData;
 }
 
 std::optional<CCell> CGrid::getFirstOccurrenceOf(char aData) const

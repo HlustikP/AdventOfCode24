@@ -20,6 +20,7 @@ public:
     explicit CGrid(std::string&& aInput);
 
     std::optional<CCell> moveInDirection(const CCell& aCell, EDirection aDirection) const;
+    std::optional<CCell> moveWithVector(const CCell& aCell, CVector aVector) const;
     [[nodiscard]] CCell getCellAt(int aRow, int aCol) const;
     void setCellDataAt(int aRow, int aCol, char aData);
     void setCellDataAt(const CCell& aCell, char aData);
