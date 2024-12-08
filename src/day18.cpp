@@ -1,5 +1,5 @@
 #include "Day18.h"
-#include "utils.hpp"
+#include "utils/misc.h"
 
 CDay18::CDay18(const fs::path& aInputDir) : CAdventSolution{ aInputDir, "Day 18: Insert Title" } {}
 

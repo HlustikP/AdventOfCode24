@@ -2,7 +2,7 @@
 #include <numeric>
 
 #include "Day7.h"
-#include "utils.hpp"
+#include "utils/misc.h"
 
 CDay7::CDay7(const fs::path& aInputDir) : CAdventSolution{ aInputDir, "Day 7: Bridge Repair" } {}
 

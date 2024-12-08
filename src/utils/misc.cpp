@@ -1,19 +1,15 @@
 #pragma once
-
-#include <filesystem>
-#include <fstream>
 #include <iostream>
-#include <optional>
-#include <algorithm>
+
+#ifdef WIN32
+#include <windows.h>
+#endif
+
+#include "misc.h"
 
 namespace fs = std::filesystem;
 
-constexpr auto NEWLINE_DELIMITER = '\n';
-
-constexpr auto ASCII_ZERO = 48;
-constexpr auto ASCII_NINE = 57;
-
-inline std::optional<std::string> readFile(const fs::path& aPath)
+std::optional<std::string> readFile(const fs::path& aPath)
 {
     if (!fs::exists(aPath)) {
         std::cerr << "[ERROR] [FILE] " << aPath << " does not exist" << std::endl;
@@ -34,12 +30,12 @@ inline std::optional<std::string> readFile(const fs::path& aPath)
     }
 }
 
-inline bool charIsDigit(const char aChar)
+bool charIsDigit(const char aChar)
 {
     return aChar <= '9' && aChar >= '0';
 }
 
-inline std::optional<int> charDigitToInt(const char aChar)
+std::optional<int> charDigitToInt(const char aChar)
 {
     if (!charIsDigit(aChar)) {
         return std::nullopt;
@@ -48,68 +44,12 @@ inline std::optional<int> charDigitToInt(const char aChar)
     return aChar - ASCII_ZERO;
 }
 
-inline bool charIsLetter(const char aChar)
+bool charIsLetter(const char aChar)
 {
     return (aChar <= 'z' && aChar >= 'a') || (aChar <= 'Z' && aChar >= 'A');
 }
 
-template <typename T>
-bool itrIsFirstLine(T aItrBegin, T aItrCurrent, int aLineSize)
-{
-    return std::distance(aItrBegin, aItrCurrent) < aLineSize;
-}
-
-template <typename T>
-bool itrIsLastLine(T aItrBegin, T aItrCurrent, int aLineSize, int aLineCount)
-{
-    return std::distance(aItrBegin, aItrCurrent) >= aLineSize * (aLineCount - 1);
-}
-
-template <typename T>
-bool itrIsFirstColumn(T aItrBegin, T aItrCurrent, int aLineSize)
-{
-    return std::distance(aItrBegin, aItrCurrent) % aLineSize == 0;
-}
-
-template <typename T>
-bool itrIsLastColumn(T aItrBegin, T aItrCurrent, int aLineSize)
-{
-    return std::distance(aItrBegin, aItrCurrent) % aLineSize == aLineSize - 1;
-}
-
-template <typename T>
-std::ostream& operator<<(std::ostream& aOs, const std::vector<T>& aVec)
-{
-    for (const auto& lV : aVec) {
-        aOs << lV << " ";
-    }
-
-    return aOs;
-}
-
-template <typename T>
-std::optional<T> operator*= (std::optional<T>& aLhs, const T& aRhs)
-{
-    if (!aLhs.has_value()) {
-        return std::nullopt;
-    }
-
-    aLhs = aLhs.value() * aRhs;
-    return aLhs;
-}
-
-template <typename T>
-std::optional<T> operator+= (std::optional<T>& aLhs, const T& aRhs)
-{
-    if (!aLhs.has_value()) {
-        return std::nullopt;
-    }
-
-    aLhs = aLhs.value() + aRhs;
-    return aLhs;
-}
-
-inline std::vector<int> getNumbersFromString(std::string_view aSv)
+std::vector<int> getNumbersFromString(std::string_view aSv)
 {
     std::vector<int> lNumbers;
     std::optional<int> lCurrentNumber = std::nullopt;
@@ -157,7 +97,7 @@ inline std::vector<int> getNumbersFromString(std::string_view aSv)
     return lNumbers;
 };
 
-inline std::vector<int64_t> getNumbersFromStringInt64(std::string_view aSv)
+std::vector<int64_t> getNumbersFromStringInt64(std::string_view aSv)
 {
     std::vector<int64_t> lNumbers;
     std::optional<int64_t> lCurrentNumber = std::nullopt;
@@ -205,64 +145,7 @@ inline std::vector<int64_t> getNumbersFromStringInt64(std::string_view aSv)
     return lNumbers;
 };
 
-template <typename T, size_t N>
-std::vector<T> getNumbersFromString(std::string_view aSv, const std::array<char, N> aSkipChars)
-{
-    std::vector<T> lNumbers;
-    T lCurrentNumber = -1;
-    T lCurrentDigit = 0;
-    auto lItr = aSv.end() - 1;
-
-    while (lItr >= aSv.begin()) {
-        if (std::find(aSkipChars.begin(), aSkipChars.end(), *lItr) != aSkipChars.end()) {
-            --lItr;
-            continue;
-        }
-
-        if (*lItr == '-') {
-            lCurrentNumber *= -1;
-            --lItr;
-            continue;
-        }
-
-        if (!charIsDigit(*lItr)) {
-            if (lCurrentNumber > -1) {
-                lNumbers.push_back(lCurrentNumber);
-                lCurrentDigit = 0;
-                lCurrentNumber = -1;
-            }
-        }
-        else {
-            if (const auto lDigit = charDigitToInt(*lItr); lDigit.has_value()) {
-                if (lCurrentNumber == -1) {
-                    lCurrentNumber = 0;
-                }
-
-                lCurrentNumber += lDigit.value() * static_cast<T>(std::pow(10, lCurrentDigit));
-                ++lCurrentDigit;
-            }
-        }
-
-        if (lItr == aSv.begin()) [[unlikely]] {
-            break;
-            }
-        --lItr;
-    }
-
-    if (lCurrentNumber > -1) {
-        lNumbers.push_back(lCurrentNumber);
-    }
-
-    return lNumbers;
-};
-
-struct PodDimensions
-{
-    int mWidth;
-    int mHeight;
-};
-
-inline PodDimensions getDimensionsFromString(const std::string& aString, char aLineEnding = NEWLINE_DELIMITER)
+PodDimensions getDimensionsFromString(const std::string& aString, char aLineEnding /* = NEWLINE_DELIMITER*/)
 {
     PodDimensions lDimensions{ .mWidth= 0, .mHeight= 0 };
 
@@ -273,7 +156,53 @@ inline PodDimensions getDimensionsFromString(const std::string& aString, char aL
     return lDimensions;
 }
 
-inline int64_t concatNumbers(int64_t aLhs, int64_t aRhs) {
+int64_t concatNumbers(int64_t aLhs, int64_t aRhs) {
     const int64_t lNumDigits = static_cast<int64_t>(std::log10(aRhs)) + 1;
     return aLhs * static_cast<int64_t>(std::pow(10, lNumDigits)) + aRhs;
+}
+
+void clearConsole()
+{
+    const HANDLE lHConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    constexpr COORD lCoordScreen = { 0, 0 };
+    DWORD lCCharsWritten;
+    CONSOLE_SCREEN_BUFFER_INFO lCsbi;
+
+    // Get the number of character cells in the current buffer.
+    if (!GetConsoleScreenBufferInfo(lHConsole, &lCsbi))
+    {
+        return;
+    }
+
+    const DWORD lDwConSize = lCsbi.dwSize.X * lCsbi.dwSize.Y;
+
+    // Fill the entire screen with blanks.
+    if (!FillConsoleOutputCharacter(lHConsole,        // Handle to console screen buffer
+        (TCHAR)' ',      // Character to write to the buffer
+        lDwConSize,       // Number of cells to write
+        lCoordScreen,     // Coordinates of first cell
+        &lCCharsWritten)) // Receive number of characters written
+    {
+        return;
+    }
+
+    // Get the current text attribute.
+    if (!GetConsoleScreenBufferInfo(lHConsole, &lCsbi))
+    {
+        return;
+    }
+
+    // Set the buffer's attributes accordingly.
+    if (!FillConsoleOutputAttribute(lHConsole,         // Handle to console screen buffer
+        lCsbi.wAttributes, // Character attributes to use
+        lDwConSize,        // Number of cells to set attribute
+        lCoordScreen,      // Coordinates of first cell
+        &lCCharsWritten))  // Receive number of characters written
+    {
+        return;
+    }
+
+    // Put the cursor at its home coordinates.
+    SetConsoleCursorPosition(lHConsole, lCoordScreen);
 }

@@ -1,7 +1,7 @@
 #include <regex>
 
 #include "Day3.h"
-#include "utils.hpp"
+#include "utils/misc.h"
 
 constexpr auto DO_INSTRUCTION = "do()";
 constexpr auto DONT_INSTRUCTION = "don't()";

@@ -4,7 +4,7 @@
 #include <numeric>
 
 #include "Day4.h"
-#include "utils.hpp"
+#include "utils/misc.h"
 
 CDay4::CDay4(const fs::path& aInputDir) : CAdventSolution{ aInputDir, "Day 4: Ceres Search" } {}
 
